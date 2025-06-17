@@ -4,20 +4,24 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore.Audio.Media
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.contentprovider.R
+import androidx.lifecycle.lifecycleScope
 import com.example.contentprovider.data.MediaRepo
 import com.example.contentprovider.databinding.ActivityMainBinding
 import com.example.contentprovider.presentation.adapter.ImageMediaGridAdapter
 import com.example.contentprovider.presentation.viewmodel.ImageMediaViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.system.measureTimeMillis
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,6 +34,28 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         askPermissionAndProceed()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            Log.d("rahul", "onCreate: ")
+            val timeTaken = measureTimeMillis {
+              val b =  async {
+                    delay(2000) // 2 seconds
+                }
+
+                delay(1000) // 1 second
+
+               val a =  async {
+                    withContext(Dispatchers.IO) {
+                        delay(2000) // 2 seconds
+                    }
+                }
+                a.await()
+                b.await()
+
+            }
+
+            println("Total time taken: $timeTaken ms")
+        }
     }
 
 
